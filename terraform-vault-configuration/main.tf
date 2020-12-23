@@ -12,10 +12,10 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
-  tenant_id       = var.tenant_id
+  subscription_id = "${var.subscription_id}"
+  client_id       = "${var.client_id}"
+  client_secret   = "${var.client_secret}"
+  tenant_id       = "${var.tenant_id}"
   features {}
 }
 
@@ -209,7 +209,7 @@ resource "vault_transit_secret_backend_key" "key" {
 }
 
 locals {
-  se-region = "Mubashar - Canada"
+  se-region = "Mubashar"
   owner     = "mubasharchand"
   purpose   = "demo for end-to-end infrastructure and application deployments"
   ttl       = "720"
@@ -298,7 +298,7 @@ resource "vault_auth_backend" "apps_access" {
   path = "approle"
 }
 
-resource "vault_approle_auth_backend_role" "webblog_approle" {
+resource "vault_approle_auth_backend_role" "web_app_approle" {
   backend            = vault_auth_backend.apps_access.path
   role_name          = "web_app-approle"
   secret_id_num_uses = "1"
