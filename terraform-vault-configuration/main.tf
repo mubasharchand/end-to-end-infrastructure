@@ -209,8 +209,8 @@ resource "vault_transit_secret_backend_key" "key" {
 }
 
 locals {
-  se-region = "AMER - Canada"
-  owner     = "sam.gabrail"
+  se-region = "Mubashar - Canada"
+  owner     = "mubasharchand"
   purpose   = "demo for end-to-end infrastructure and application deployments"
   ttl       = "720"
   terraform = "true"
