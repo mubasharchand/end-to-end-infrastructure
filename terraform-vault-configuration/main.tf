@@ -300,7 +300,7 @@ resource "vault_auth_backend" "apps_access" {
 
 resource "vault_approle_auth_backend_role" "webblog_approle" {
   backend            = vault_auth_backend.apps_access.path
-  role_name          = "webblog-approle"
+  role_name          = "web_app-approle"
   secret_id_num_uses = "1"
   secret_id_ttl      = "600"
   token_ttl          = "1800"
