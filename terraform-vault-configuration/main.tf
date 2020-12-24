@@ -19,6 +19,7 @@ provider "azurerm" {
   features {}
 }
 
+
 provider "vault" {
   # Configuration options
 }
