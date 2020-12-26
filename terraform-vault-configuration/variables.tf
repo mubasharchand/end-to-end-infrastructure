@@ -20,22 +20,22 @@ variable "DB_URL_AZURE" {
 
 variable "subscription_id" {
   description = "Azure subscription_id"
-  type = string
+  
 }
 
 variable "tenant_id" {
   description = "Azure tenant_id"
-  type = string
+  
 }
 
 variable "client_secret" {
   description = "Azure client_secret"
-  type = string
+  
 }
 
 variable "client_id" {
   description = "Azure client_id"
-  type = string
+  
 }
 
 variable "prefix" {
