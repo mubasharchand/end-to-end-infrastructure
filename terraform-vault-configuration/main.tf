@@ -68,9 +68,9 @@ EOT
 
 // WebBlog Config
 
-resource "vault_auth_backend" "kubernetes" {
-  type = "kubernetes"
-}
+# resource "vault_auth_backend" "kubernetes" {
+#   type = "kubernetes"
+# }
 
 // resource "vault_kubernetes_auth_backend_config" "kubernetes_config" {
 //   kubernetes_host    = "<K8s_host>"
@@ -84,149 +84,149 @@ resource "vault_auth_backend" "kubernetes" {
 //    kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" \
 //    kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 
-resource "vault_kubernetes_auth_backend_role" "web_app" {
-  backend                          = vault_auth_backend.kubernetes.path
-  role_name                        = "web_app"
-  bound_service_account_names      = ["web_app"]
-  bound_service_account_namespaces = ["web_app"]
-  token_ttl                        = 86400
-  token_policies                   = ["web_app"]
-}
+# resource "vault_kubernetes_auth_backend_role" "web_app" {
+#   backend                          = vault_auth_backend.kubernetes.path
+#   role_name                        = "web_app"
+#   bound_service_account_names      = ["web_app"]
+#   bound_service_account_namespaces = ["web_app"]
+#   token_ttl                        = 86400
+#   token_policies                   = ["web_app"]
+# }
 
-resource "vault_policy" "web_app" {
-  name   = "webblog"
-  policy = file("policies/web_app_policy.hcl")
-}
+# resource "vault_policy" "web_app" {
+#   name   = "webblog"
+#   policy = file("policies/web_app_policy.hcl")
+# }
 
-resource "vault_mount" "internal" {
-  path        = "internal"
-  type        = "kv-v2"
-  description = "KV2 Secrets Engine for WebBlog MongoDB."
-}
+# resource "vault_mount" "internal" {
+#   path        = "internal"
+#   type        = "kv-v2"
+#   description = "KV2 Secrets Engine for WebBlog MongoDB."
+# }
 
-resource "vault_generic_secret" "web_app" {
-  path = "${vault_mount.internal.path}/web_app/mongodb"
+# resource "vault_generic_secret" "web_app" {
+#   path = "${vault_mount.internal.path}/web_app/mongodb"
 
-  data_json = <<EOT
-{
-  "username": "${var.DB_USER}",
-  "password": "${var.DB_PASSWORD}"
-}
-EOT
-}
+#   data_json = <<EOT
+# {
+#   "username": "${var.DB_USER}",
+#   "password": "${var.DB_PASSWORD}"
+# }
+# EOT
+# }
 
-resource "vault_mount" "db" {
-  path = "mongodb"
-  type = "database"
-  description = "Dynamic Secrets Engine for WebBlog MongoDB."
-}
+# resource "vault_mount" "db" {
+#   path = "mongodb"
+#   type = "database"
+#   description = "Dynamic Secrets Engine for WebBlog MongoDB."
+# }
 
-resource "vault_mount" "db_nomad" {
-  path = "mongodb_nomad"
-  type = "database"
-  description = "Dynamic Secrets Engine for WebBlog MongoDB on Nomad."
-}
+# resource "vault_mount" "db_nomad" {
+#   path = "mongodb_nomad"
+#   type = "database"
+#   description = "Dynamic Secrets Engine for WebBlog MongoDB on Nomad."
+# }
 
-resource "vault_mount" "db_azure" {
-  path = "mongodb_azure"
-  type = "database"
-  description = "Dynamic Secrets Engine for WebBlog MongoDB on Azure."
-}
+# resource "vault_mount" "db_azure" {
+#   path = "mongodb_azure"
+#   type = "database"
+#   description = "Dynamic Secrets Engine for WebBlog MongoDB on Azure."
+# }
 
-resource "vault_database_secret_backend_connection" "mongodb" {
-  backend       = vault_mount.db.path
-  name          = "mongodb"
-  allowed_roles = ["mongodb-role"]
+# resource "vault_database_secret_backend_connection" "mongodb" {
+#   backend       = vault_mount.db.path
+#   name          = "mongodb"
+#   allowed_roles = ["mongodb-role"]
 
-  mongodb {
-    connection_url = "mongodb://${var.DB_USER}:${var.DB_PASSWORD}@${var.DB_URL}/admin"
+#   mongodb {
+#     connection_url = "mongodb://${var.DB_USER}:${var.DB_PASSWORD}@${var.DB_URL}/admin"
     
-  }
-}
+#   }
+# }
 
-resource "vault_database_secret_backend_connection" "mongodb_nomad" {
-  backend       = vault_mount.db_nomad.path
-  name          = "mongodb_nomad"
-  allowed_roles = ["mongodb-nomad-role"]
+# resource "vault_database_secret_backend_connection" "mongodb_nomad" {
+#   backend       = vault_mount.db_nomad.path
+#   name          = "mongodb_nomad"
+#   allowed_roles = ["mongodb-nomad-role"]
 
-  mongodb {
-    connection_url = "mongodb://${var.DB_USER}:${var.DB_PASSWORD}@${var.DB_URL_NOMAD}/admin"
+#   mongodb {
+#     connection_url = "mongodb://${var.DB_USER}:${var.DB_PASSWORD}@${var.DB_URL_NOMAD}/admin"
     
-  }
-}
+#   }
+# }
 
-resource "vault_database_secret_backend_connection" "mongodb_azure" {
-  backend       = vault_mount.db_azure.path
-  name          = "mongodb_azure"
-  allowed_roles = ["mongodb-azure-role"]
+# resource "vault_database_secret_backend_connection" "mongodb_azure" {
+#   backend       = vault_mount.db_azure.path
+#   name          = "mongodb_azure"
+#   allowed_roles = ["mongodb-azure-role"]
 
-  mongodb {
-    connection_url = "mongodb://${var.DB_USER}:${var.DB_PASSWORD}@${var.DB_URL_AZURE}/admin"
+#   mongodb {
+#     connection_url = "mongodb://${var.DB_USER}:${var.DB_PASSWORD}@${var.DB_URL_AZURE}/admin"
     
-  }
-}
+#   }
+# }
 
-resource "vault_database_secret_backend_role" "mongodb-role" {
-  backend             = vault_mount.db.path
-  name                = "mongodb-role"
-  db_name             = vault_database_secret_backend_connection.mongodb.name
-  default_ttl         = "10"
-  max_ttl             = "86400"
-  creation_statements = ["{ \"db\": \"admin\", \"roles\": [{ \"role\": \"readWriteAnyDatabase\" }, {\"role\": \"read\", \"db\": \"foo\"}] }"]
-}
+# resource "vault_database_secret_backend_role" "mongodb-role" {
+#   backend             = vault_mount.db.path
+#   name                = "mongodb-role"
+#   db_name             = vault_database_secret_backend_connection.mongodb.name
+#   default_ttl         = "10"
+#   max_ttl             = "86400"
+#   creation_statements = ["{ \"db\": \"admin\", \"roles\": [{ \"role\": \"readWriteAnyDatabase\" }, {\"role\": \"read\", \"db\": \"foo\"}] }"]
+# }
 
-resource "vault_database_secret_backend_role" "mongodb-nomad-role" {
-  backend             = vault_mount.db_nomad.path
-  name                = "mongodb-nomad-role"
-  db_name             = vault_database_secret_backend_connection.mongodb_nomad.name
-  default_ttl         = "10"
-  max_ttl             = "86400"
-  creation_statements = ["{ \"db\": \"admin\", \"roles\": [{ \"role\": \"readWriteAnyDatabase\" }, {\"role\": \"read\", \"db\": \"foo\"}] }"]
-}
+# resource "vault_database_secret_backend_role" "mongodb-nomad-role" {
+#   backend             = vault_mount.db_nomad.path
+#   name                = "mongodb-nomad-role"
+#   db_name             = vault_database_secret_backend_connection.mongodb_nomad.name
+#   default_ttl         = "10"
+#   max_ttl             = "86400"
+#   creation_statements = ["{ \"db\": \"admin\", \"roles\": [{ \"role\": \"readWriteAnyDatabase\" }, {\"role\": \"read\", \"db\": \"foo\"}] }"]
+# }
 
-resource "vault_database_secret_backend_role" "mongodb-azure-role" {
-  backend             = vault_mount.db_azure.path
-  name                = "mongodb-azure-role"
-  db_name             = vault_database_secret_backend_connection.mongodb_azure.name
-  default_ttl         = "10"
-  max_ttl             = "86400"
-  creation_statements = ["{ \"db\": \"admin\", \"roles\": [{ \"role\": \"readWriteAnyDatabase\" }, {\"role\": \"read\", \"db\": \"foo\"}] }"]
-}
+# resource "vault_database_secret_backend_role" "mongodb-azure-role" {
+#   backend             = vault_mount.db_azure.path
+#   name                = "mongodb-azure-role"
+#   db_name             = vault_database_secret_backend_connection.mongodb_azure.name
+#   default_ttl         = "10"
+#   max_ttl             = "86400"
+#   creation_statements = ["{ \"db\": \"admin\", \"roles\": [{ \"role\": \"readWriteAnyDatabase\" }, {\"role\": \"read\", \"db\": \"foo\"}] }"]
+# }
 
 
-resource "vault_mount" "transit" {
-  path                      = "transit"
-  type                      = "transit"
-  description               = "To Encrypt the webblog"
-  default_lease_ttl_seconds = 3600
-  max_lease_ttl_seconds     = 86400
-}
+# resource "vault_mount" "transit" {
+#   path                      = "transit"
+#   type                      = "transit"
+#   description               = "To Encrypt the webblog"
+#   default_lease_ttl_seconds = 3600
+#   max_lease_ttl_seconds     = 86400
+# }
 
-resource "vault_transit_secret_backend_key" "key" {
-  backend = vault_mount.transit.path
-  name    = "webblog-key"
-  derived = "true"
-  convergent_encryption = "true"
-}
+# resource "vault_transit_secret_backend_key" "key" {
+#   backend = vault_mount.transit.path
+#   name    = "webblog-key"
+#   derived = "true"
+#   convergent_encryption = "true"
+# }
 
-locals {
-  se-region = "Mubashar"
-  owner     = "mubasharchand"
-  purpose   = "demo for end-to-end infrastructure and application deployments"
-  ttl       = "720"
-  terraform = "true"
-}
+# locals {
+#   se-region = "Mubashar"
+#   owner     = "mubasharchand"
+#   purpose   = "demo for end-to-end infrastructure and application deployments"
+#   ttl       = "720"
+#   terraform = "true"
+# }
 
-locals {
-  # Common tags to be assigned to all resources
-  common_tags = {
-    se-region = local.se-region
-    owner     = local.owner
-    purpose   = local.purpose
-    ttl       = local.ttl
-    terraform = local.terraform
-  }
-}
+# locals {
+#   # Common tags to be assigned to all resources
+#   common_tags = {
+#     se-region = local.se-region
+#     owner     = local.owner
+#     purpose   = local.purpose
+#     ttl       = local.ttl
+#     terraform = local.terraform
+#   }
+# }
 
 # Azure Secrets Engine Configuration
 resource "azurerm_resource_group" "myresourcegroup" {
